@@ -1,0 +1,39 @@
+﻿@model QRCodeModel
+
+<h2>Scan QR Code</h2>
+
+<button id="scan-qr-code-btn">Scan QR Code</button>
+
+<div id="qr-code-scanner"></div>
+
+<script>
+    document.getElementById("scan-qr-code-btn").addEventListener("click", function () {
+        // Request access to camera
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+            .then(stream => {
+                // Create a video element to display the camera feed
+                const video = document.createElement("video");
+                video.srcObject = stream;
+                video.play();
+
+                // Create a canvas element to capture the QR code
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
+
+                // Set up the QR code scanner
+                const qrCodeScanner = new QRCodeScanner();
+                qrCodeScanner.setCanvas(canvas);
+
+                // Scan the QR code
+                qrCodeScanner.scan().then(result => {
+                    console.log(result);
+                    // Handle the scanned QR code result
+                }).catch(error => {
+                    console.error(error);
+                });
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    });
+</script>
